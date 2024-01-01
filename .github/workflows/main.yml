@@ -49,11 +49,4 @@ jobs:
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
         docker push maryamusmani/mlops-proj:${VERSION}
 
-    - name: Update docker-compose file
-      run: |
-        cd Project/docker-compose.yaml
-        VERSION=$(git describe --tags --always)
-        sed -i "s|maryamnusmani/mlops-proj:latest|maryamusmani/mlops-proj:${VERSION}|g" docker-compose.yml
-        git add docker-compose.yml
-        git commit -m "Update docker-compose file with version ${VERSION}"
-        git push origin main
+
