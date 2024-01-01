@@ -25,7 +25,7 @@ jobs:
 
     - name: Generate dummy data and append
       run: |
-        python your_script_name.py
+        python project.py
 
   deploy:
     needs: build
