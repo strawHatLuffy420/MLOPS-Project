@@ -80,6 +80,27 @@ def preprocess_and_split_data(data):
     # Split Data into Training and Validation Sets
     X_train, X_valid, y_train, y_valid = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
+    return X_train, X_valid, y_train, y_valid
+
+
+def train_predictive_maintenance_model(X_train, y_train, X_valid, y_valid):
+    # Create XGBoost regressor
+    model = xgb.XGBRegressor(objective='reg:squarederror', random_state=42)
+
+    # Train the model
+    model.fit(X_train, y_train)
+
+    # Make predictions on the validation set
+    predictions = model.predict(X_valid)
+
+    # Evaluate the model
+    mse = mean_squared_error(y_valid, predictions)
+    mae = mean_absolute_error(y_valid, predictions)
+
+    print(f'Mean Squared Error: {mse}')
+    print(f'Mean Absolute Error: {mae}')
+
+    return model
 
 if __name__ == "__main__":
     data_file_path = 'dummy_sensor_data.csv'
@@ -92,4 +113,14 @@ if __name__ == "__main__":
     # Save dummy data to CSV file
     dummy_data.to_csv(data_file_path, index=False)
 
+    # Generate and append data
     generate_and_append_data(data_file_path)
+
+    # Load the updated dataset
+    updated_data = pd.read_csv(data_file_path)
+
+    # Preprocess and split data
+    X_train, X_valid, y_train, y_valid = preprocess_and_split_data(updated_data)
+
+    # Train the predictive maintenance model
+    trained_model = train_predictive_maintenance_model(X_train, y_train, X_valid, y_valid)
