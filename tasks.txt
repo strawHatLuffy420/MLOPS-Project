@@ -1,0 +1,12 @@
+✔I190522-Asad:
+Data Acquisition
+Data Pre-processing
+Model Training
+
+✔i190444-Afsheen:
+Drift Monitoring
+Documentation
+
+✔i190520-Maryam:
+Deployment
+Presentation
