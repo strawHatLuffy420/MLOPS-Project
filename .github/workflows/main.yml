@@ -1,0 +1,57 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Generate dummy data and append
+      run: |
+        python your_script_name.py
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker
+      uses: docker/setup-docker@v2
+
+    - name: Build and push Docker image
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: |
+        VERSION=$(git describe --tags --always)
+        docker build -t maryamusmani/mlops-proj:${VERSION} .
+        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+        docker push maryamusmani/mlops-proj:${VERSION}
+
+    - name: Update docker-compose file
+      run: |
+        VERSION=$(git describe --tags --always)
+        sed -i "s|maryamnusmani/mlops-proj:latest|maryamusmani/mlops-proj:${VERSION}|g" docker-compose.yml
+        git add docker-compose.yml
+        git commit -m "Update docker-compose file with version ${VERSION}"
+        git push origin main
