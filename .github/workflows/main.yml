@@ -51,6 +51,7 @@ jobs:
 
     - name: Update docker-compose file
       run: |
+        cd Project/docker-compose.yaml
         VERSION=$(git describe --tags --always)
         sed -i "s|maryamnusmani/mlops-proj:latest|maryamusmani/mlops-proj:${VERSION}|g" docker-compose.yml
         git add docker-compose.yml
