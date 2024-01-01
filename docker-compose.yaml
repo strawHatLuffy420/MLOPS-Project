@@ -1,0 +1,14 @@
+version: '3'
+services:
+  predictive-maintenance-app:
+    build:
+      context: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./dummy_sensor_data.csv:/app/dummy_sensor_data.csv
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_RUN_HOST=0.0.0.0
+
+  # Add any additional services or databases that your application might need
